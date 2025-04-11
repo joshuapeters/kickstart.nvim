@@ -100,6 +100,36 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Local/Global Replace Keybinds
+-- Add this to your keymaps section (the area with other vim.keymap.set calls)
+
+-- Quick find and replace for the current word
+vim.keymap.set('n', '<leader>rb', function()
+  -- Get the word under the cursor
+  local word = vim.fn.expand '<cword>'
+  -- Prepare the substitute command with the current word pre-filled
+  local cmd = ':%s/' .. word .. '/'
+  -- Set the command in command mode, leaving cursor at the end for replacement
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(cmd, true, false, true), 'n', true)
+end, { desc = '[R]eplace in [B]uffer' })
+
+-- Global find and replace (with confirmation)
+vim.keymap.set('n', '<leader>rg', function()
+  -- Prompt for the word to replace
+  local old_word = vim.fn.input 'Replace what? '
+  if old_word == '' then
+    return
+  end
+
+  local new_word = vim.fn.input 'Replace with? '
+  if new_word == '' then
+    return
+  end
+
+  -- Use global command with confirmation
+  vim.cmd(':%s/' .. old_word .. '/' .. new_word .. '/gc')
+end, { desc = '[R]eplace [G]lobally with confirmation' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -765,7 +795,7 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev', 'supermaven' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
         },
