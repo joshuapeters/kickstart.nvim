@@ -101,7 +101,12 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Local/Global Replace Keybinds
--- Add this to your keymaps section (the area with other vim.keymap.set calls)
+
+-- Open terminal split horizontally
+vim.keymap.set('n', '<leader>th', '<cmd>split | term<CR>', { desc = 'Open [T]erminal with [H]orizontal split' })
+
+-- Open terminal split vertically
+vim.keymap.set('n', '<leader>tv', '<cmd>vsplit | term<CR>', { desc = 'Open [T]erminal with [V]ertical split' })
 
 -- Quick find and replace for the current word
 vim.keymap.set('n', '<leader>rb', function()
@@ -554,9 +559,9 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>th', function()
+            map('<leader>ih', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
+            end, 'Toggle [I]nlay [H]ints')
           end
         end,
       })
@@ -795,24 +800,27 @@ require('lazy').setup({
       },
 
       sources = {
-        default = { 'lsp', 'path', 'snippets', 'lazydev', 'supermaven' },
+        default = { 'lsp', 'path', 'snippets', 'lazydev' },
         providers = {
           lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+        },
+        per_filetype = {
+          codecompanion = { 'codecompanion' },
         },
       },
 
       snippets = { preset = 'luasnip' },
 
-      -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
+      -- blink.cmp includes an optional, recommended rust fuzzy matcher,
       -- which automatically downloads a prebuilt binary when enabled.
       --
-      -- By default, we use the Lua implementation instead, but you may enable
+      -- by default, we use the lua implementation instead, but you may enable
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
-      -- See :h blink-cmp-config-fuzzy for more information
+      -- see :h blink-cmp-config-fuzzy for more information
       fuzzy = { implementation = 'lua' },
 
-      -- Shows a signature help window while you type arguments for a function
+      -- shows a signature help window while you type arguments for a function
       signature = { enabled = true },
     },
   },
@@ -874,6 +882,9 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
+
+      -- Moving code lines/blocks
+      require('mini.move').setup()
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
