@@ -19,6 +19,21 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Remove unused imports on save
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+  group = vim.api.nvim_create_augroup('ts_imports', { clear = true }),
+  pattern = { '*.tsx,*.ts' },
+  callback = function()
+    vim.lsp.buf.code_action {
+      apply = true,
+      context = {
+        only = { 'source.removeUnused.ts' },
+        diagnostics = {},
+      },
+    }
+  end,
+})
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -31,7 +46,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -204,7 +219,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -707,6 +721,9 @@ require('lazy').setup({
           cpp = true,
           typescript = true,
           typescriptreact = true,
+          javascript = true,
+          javascriptreact = true,
+          ruby = true,
         }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
@@ -719,6 +736,14 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        javascript = { 'prettierd', 'prettier', 'eslint' },
+        javascriptreact = { 'prettierd', 'prettier', 'eslint' },
+        typescript = { 'prettierd', 'prettier', 'eslint' },
+        typescriptreact = { 'prettierd', 'prettier', 'eslint' },
+        css = { 'stylelint', 'prettierd', 'prettier' },
+        scss = { 'stylelint', 'prettierd', 'prettier' },
+        html = { 'prettierd', 'prettier' },
+        json = { 'prettierd', 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
