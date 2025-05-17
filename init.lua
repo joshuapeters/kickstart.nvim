@@ -173,6 +173,18 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('n', '<leader>cp', function()
+  local relative_path = vim.fn.expand '%'
+  vim.fn.setreg('+', relative_path)
+  vim.notify('Copied relative path: ' .. relative_path)
+end, { desc = 'Copy relative path to clipboard' })
+
+vim.keymap.set('n', '<leader>cP', function()
+  local absolute_path = vim.fn.expand '%:p'
+  vim.fn.setreg('+', absolute_path)
+  vim.notify('Copied absolute path: ' .. absolute_path)
+end, { desc = 'Copy absolute path to clipboard' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -524,9 +536,6 @@ require('lazy').setup({
           --  the definition of its *type*, not where it was *defined*.
           map('gt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
 
-          map('<leader>hd', vim.lsp.buf.hover, '[H]over [D]ocs')
-
-          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
           ---@param method vim.lsp.protocol.Method
           ---@param bufnr? integer some lsp support methods only in specific files
@@ -771,15 +780,12 @@ require('lazy').setup({
           return 'make install_jsregexp'
         end)(),
         dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
-          --    See the README about individual language/framework/plugin snippets:
-          --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -847,7 +853,7 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- see :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+      fuzzy = { implementation = 'lua', prefer_rust_with_warning = true },
 
       -- shows a signature help window while you type arguments for a function
       signature = { enabled = true },
@@ -893,8 +899,24 @@ require('lazy').setup({
       -- Moving code lines/blocks
       require('mini.move').setup()
 
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
+      -- file explorer
+      require('mini.files').setup {
+        options = { use_as_default_explorer = true },
+        mappings = {
+          close = '\\',
+          go_in = '<CR>',
+          go_out = '<BS>',
+          open = '<CR>',
+          show_help = '?',
+        },
+      }
+
+      -- open mini.files to current file when pressing '\'
+      vim.keymap.set('n', '\\', function()
+        local mini = require 'mini.files'
+        mini.open(vim.api.nvim_buf_get_name(0), false)
+        mini.reveal_cwd()
+      end)
     end,
   },
   { -- Highlight, edit, and navigate code
@@ -902,7 +924,23 @@ require('lazy').setup({
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'typescript',
+        'typescriptreact',
+        'javascript',
+        'javascriptreact',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -918,7 +956,6 @@ require('lazy').setup({
 
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
 
   { import = 'custom.plugins' },
 }, {
