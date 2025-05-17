@@ -266,6 +266,14 @@ require('lazy').setup({
     },
   },
 
+  -- Show css colors
+  {
+    'catgoose/nvim-colorizer.lua',
+    event = 'BufReadPre',
+    opts = { -- set to setup table
+    },
+  },
+
   {
     'antosha417/nvim-lsp-file-operations',
     dependencies = {
