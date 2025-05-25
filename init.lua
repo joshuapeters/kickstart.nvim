@@ -908,25 +908,6 @@ require('lazy').setup({
 
       -- Moving code lines/blocks
       require('mini.move').setup()
-
-      -- file explorer
-      -- require('mini.files').setup {
-      --   options = { use_as_default_explorer = true },
-      --   mappings = {
-      --     close = '\\',
-      --     go_in = '<CR>',
-      --     go_out = '<BS>',
-      --     open = '<CR>',
-      --     show_help = '?',
-      --   },
-      -- }
-
-      -- open mini.files to current file when pressing '\'
-      -- vim.keymap.set('n', '\\', function()
-      --   local mini = require 'mini.files'
-      --   mini.open(vim.api.nvim_buf_get_name(0), false)
-      --   mini.reveal_cwd()
-      -- end)
     end,
   },
   { -- Highlight, edit, and navigate code
