@@ -107,6 +107,8 @@ vim.opt.confirm = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+vim.keymap.set('n', '\\', '<cmd>Oil<CR>', { desc = 'Open Oil' })
+vim.keymap.set('n', '<leader>qb', '<cmd>bd<CR>', { desc = '[Q]uit [B]uffer' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -645,7 +647,6 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
-        -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -670,6 +671,7 @@ require('lazy').setup({
           },
         },
         ruby_lsp = {},
+        rust_analyzer = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -754,8 +756,8 @@ require('lazy').setup({
         lua = { 'stylua' },
         javascript = { 'prettierd', 'prettier', 'eslint' },
         javascriptreact = { 'prettierd', 'prettier', 'eslint' },
-        typescript = { 'prettierd', 'prettier', 'eslint', 'eslint_d' },
-        typescriptreact = { 'prettierd', 'prettier', 'eslint', 'eslint_d' },
+        typescript = { 'prettierd', 'prettier', 'eslint' },
+        typescriptreact = { 'prettierd', 'prettier', 'eslint' },
         css = { 'stylelint', 'prettierd', 'prettier' },
         scss = { 'stylelint', 'prettierd', 'prettier' },
         html = { 'prettierd', 'prettier' },
@@ -861,7 +863,7 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- see :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua', prefer_rust_with_warning = true },
+      fuzzy = { implementation = 'lua' },
 
       -- shows a signature help window while you type arguments for a function
       signature = { enabled = true },
@@ -908,23 +910,23 @@ require('lazy').setup({
       require('mini.move').setup()
 
       -- file explorer
-      require('mini.files').setup {
-        options = { use_as_default_explorer = true },
-        mappings = {
-          close = '\\',
-          go_in = '<CR>',
-          go_out = '<BS>',
-          open = '<CR>',
-          show_help = '?',
-        },
-      }
+      -- require('mini.files').setup {
+      --   options = { use_as_default_explorer = true },
+      --   mappings = {
+      --     close = '\\',
+      --     go_in = '<CR>',
+      --     go_out = '<BS>',
+      --     open = '<CR>',
+      --     show_help = '?',
+      --   },
+      -- }
 
       -- open mini.files to current file when pressing '\'
-      vim.keymap.set('n', '\\', function()
-        local mini = require 'mini.files'
-        mini.open(vim.api.nvim_buf_get_name(0), false)
-        mini.reveal_cwd()
-      end)
+      -- vim.keymap.set('n', '\\', function()
+      --   local mini = require 'mini.files'
+      --   mini.open(vim.api.nvim_buf_get_name(0), false)
+      --   mini.reveal_cwd()
+      -- end)
     end,
   },
   { -- Highlight, edit, and navigate code
