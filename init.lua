@@ -8,6 +8,9 @@ vim.env.PATH = ruby_bin .. ':' .. vim.env.PATH
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Set line width marker to 80
+vim.opt.colorcolumn = '80'
+
 -- Set tabs for java/typescript files
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' },
